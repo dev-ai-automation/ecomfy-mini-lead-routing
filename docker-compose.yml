@@ -1,0 +1,42 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ecomfy
+      POSTGRES_PASSWORD: ecomfy
+      POSTGRES_DB: ecomfy
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ecomfy"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+  app:
+    build: .
+    environment:
+      DATABASE_URL: postgresql+psycopg2://ecomfy:ecomfy@db:5432/ecomfy
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-sonnet-4-6}
+      SLACK_WEBHOOK_URL: ${SLACK_WEBHOOK_URL:-}
+      BUYER_TIMEOUT_SECONDS: ${BUYER_TIMEOUT_SECONDS:-2.0}
+    ports:
+      - "${API_PORT:-8000}:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  web:
+    build: ./frontend
+    environment:
+      API_BASE_URL: http://app:8000
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+    depends_on:
+      - app
+
+volumes:
+  pgdata:
