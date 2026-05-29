@@ -141,6 +141,17 @@ def list_alerts(db: Session = Depends(get_db)):
     return to_list(AlertRepo(db).recent())
 
 
+@router.get("/ledger")
+def list_ledger(limit: int = 200, db: Session = Depends(get_db)):
+    rows = (
+        db.query(models.LedgerTransaction)
+        .order_by(models.LedgerTransaction.created_at.desc())
+        .limit(limit)
+        .all()
+    )
+    return to_list(rows)
+
+
 @router.post("/dev/reset")
 def dev_reset(db: Session = Depends(get_db)):
     reset_all(db)
