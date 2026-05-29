@@ -1,0 +1,91 @@
+{
+  "info": {
+    "name": "EcomfyApp Mini Lead Routing Engine",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [{ "key": "base", "value": "http://localhost:8000" }],
+  "item": [
+    {
+      "name": "Health",
+      "request": { "method": "GET", "url": "{{base}}/health" }
+    },
+    {
+      "name": "Reset demo",
+      "request": { "method": "POST", "url": "{{base}}/dev/reset" }
+    },
+    {
+      "name": "Seed 10 leads",
+      "request": { "method": "POST", "url": "{{base}}/dev/seed-leads" }
+    },
+    {
+      "name": "1 - Sold to first buyer (TX/auto)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{base}}/leads",
+        "body": { "mode": "raw", "raw": "{\n  \"first_name\": \"John\", \"last_name\": \"Smith\",\n  \"phone\": \"2145550100\", \"email\": \"first@example.com\",\n  \"state\": \"TX\", \"vertical\": \"auto_insurance\",\n  \"source\": \"web_form\", \"jornaya_lead_id\": \"JRN-1\"\n}" }
+      }
+    },
+    {
+      "name": "2 - Sold after fallback (FL/life)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{base}}/leads",
+        "body": { "mode": "raw", "raw": "{\n  \"first_name\": \"Maria\", \"last_name\": \"Gonzalez\",\n  \"phone\": \"3055550200\", \"email\": \"fallback@example.com\",\n  \"state\": \"FL\", \"vertical\": \"life_insurance\",\n  \"source\": \"web_form\", \"trusted_form_cert_url\": \"https://cert/x\"\n}" }
+      }
+    },
+    {
+      "name": "3 - Duplicate rejected",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{base}}/leads",
+        "body": { "mode": "raw", "raw": "{\n  \"first_name\": \"John\", \"last_name\": \"Smith\",\n  \"phone\": \"2145550100\", \"email\": \"first@example.com\",\n  \"state\": \"TX\", \"vertical\": \"auto_insurance\",\n  \"source\": \"web_form\", \"jornaya_lead_id\": \"JRN-2\"\n}" }
+      }
+    },
+    {
+      "name": "4 - Missing email rejected",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{base}}/leads",
+        "body": { "mode": "raw", "raw": "{\n  \"first_name\": \"Carlos\", \"phone\": \"3055550400\", \"email\": \"\",\n  \"state\": \"FL\", \"vertical\": \"life_insurance\",\n  \"source\": \"web_form\", \"trusted_form_cert_url\": \"https://cert/x\"\n}" }
+      }
+    },
+    {
+      "name": "7 - No eligible buyers (WA) -> unsold",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{base}}/leads",
+        "body": { "mode": "raw", "raw": "{\n  \"first_name\": \"Sophia\", \"phone\": \"2065551000\", \"email\": \"wa@example.com\",\n  \"state\": \"WA\", \"vertical\": \"life_insurance\",\n  \"source\": \"web_form\", \"trusted_form_cert_url\": \"https://cert/x\"\n}" }
+      }
+    },
+    {
+      "name": "8 - Return a sold lead",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{base}}/leads/REPLACE_LEAD_ID/return",
+        "body": { "mode": "raw", "raw": "{ \"reason\": \"wrong number\" }" }
+      }
+    },
+    {
+      "name": "Daily summary",
+      "request": { "method": "GET", "url": "{{base}}/reports/daily-summary" }
+    },
+    {
+      "name": "Daily summary + AI",
+      "request": { "method": "GET", "url": "{{base}}/reports/daily-summary?ai=true" }
+    },
+    {
+      "name": "Buyers",
+      "request": { "method": "GET", "url": "{{base}}/buyers" }
+    },
+    {
+      "name": "Alerts",
+      "request": { "method": "GET", "url": "{{base}}/alerts" }
+    }
+  ]
+}

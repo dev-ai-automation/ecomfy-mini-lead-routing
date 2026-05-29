@@ -1,0 +1,109 @@
+### EcomfyApp Mini Lead Routing Engine — REST collection
+### Use with the VS Code "REST Client" extension, or copy as curl.
+@base = http://localhost:8000
+
+### Health
+GET {{base}}/health
+
+### Reset demo (fresh buyers + cleared data)
+POST {{base}}/dev/reset
+
+### Seed all 10 fixture leads through the real pipeline
+POST {{base}}/dev/seed-leads
+
+### 1. Valid lead -> SOLD to first eligible buyer (TX / auto_insurance)
+POST {{base}}/leads
+Content-Type: application/json
+
+{
+  "first_name": "John", "last_name": "Smith",
+  "phone": "2145550100", "email": "first@example.com",
+  "state": "TX", "vertical": "auto_insurance",
+  "source": "web_form", "jornaya_lead_id": "JRN-1"
+}
+
+### 2. Lead SOLD after fallback (FL / life -> B reject, C timeout, A accept)
+POST {{base}}/leads
+Content-Type: application/json
+
+{
+  "first_name": "Maria", "last_name": "Gonzalez",
+  "phone": "3055550200", "email": "fallback@example.com",
+  "state": "FL", "vertical": "life_insurance",
+  "source": "web_form", "trusted_form_cert_url": "https://cert/x"
+}
+
+### 3. Duplicate -> REJECTED (re-send #1 phone/email)
+POST {{base}}/leads
+Content-Type: application/json
+
+{
+  "first_name": "John", "last_name": "Smith",
+  "phone": "2145550100", "email": "first@example.com",
+  "state": "TX", "vertical": "auto_insurance",
+  "source": "web_form", "jornaya_lead_id": "JRN-2"
+}
+
+### 4. Missing email -> REJECTED
+POST {{base}}/leads
+Content-Type: application/json
+
+{
+  "first_name": "Carlos", "phone": "3055550400", "email": "",
+  "state": "FL", "vertical": "life_insurance",
+  "source": "web_form", "trusted_form_cert_url": "https://cert/x"
+}
+
+### 5 & 6. Discards: buyer_d (insufficient balance), buyer_e (cap reached) — see evaluations[]
+POST {{base}}/leads
+Content-Type: application/json
+
+{
+  "first_name": "Eval", "last_name": "Trace",
+  "phone": "3055550500", "email": "eval@example.com",
+  "state": "FL", "vertical": "life_insurance",
+  "source": "web_form", "trusted_form_cert_url": "https://cert/x"
+}
+
+### 7. No eligible buyers -> UNSOLD (WA)
+POST {{base}}/leads
+Content-Type: application/json
+
+{
+  "first_name": "Sophia", "phone": "2065551000", "email": "wa@example.com",
+  "state": "WA", "vertical": "life_insurance",
+  "source": "web_form", "trusted_form_cert_url": "https://cert/x"
+}
+
+### 8a. Sell a lead to return
+POST {{base}}/leads
+Content-Type: application/json
+
+{
+  "first_name": "Ret", "last_name": "User",
+  "phone": "2145550800", "email": "ret@example.com",
+  "state": "TX", "vertical": "auto_insurance",
+  "source": "web_form", "jornaya_lead_id": "JRN-8"
+}
+
+### 8b. Return it (replace LEAD_ID with the id from 8a) -> refund
+POST {{base}}/leads/LEAD_ID/return
+Content-Type: application/json
+
+{ "reason": "wrong number" }
+
+### Lead detail (full trace: evaluations + attempts + ledger)
+GET {{base}}/leads/LEAD_ID
+
+### Daily operational summary
+GET {{base}}/reports/daily-summary
+
+### Daily summary WITH AI executive summary (needs ANTHROPIC_API_KEY)
+GET {{base}}/reports/daily-summary?ai=true
+
+### Buyers / Leads / Alerts
+GET {{base}}/buyers
+###
+GET {{base}}/leads?limit=50
+###
+GET {{base}}/alerts
