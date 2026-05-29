@@ -1,0 +1,4 @@
+# Normalize line endings to LF in the repository.
+# Critical for *.sh: CRLF in a shebang breaks scripts on Linux (e.g. the GCP VM).
+* text=auto eol=lf
+*.sh text eol=lf
