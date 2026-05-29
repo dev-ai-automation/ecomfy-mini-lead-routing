@@ -1,0 +1,9 @@
+node_modules
+.next
+out
+.env*.local
+*.tsbuildinfo
+next-env.d.ts.bak
+# Host-generated lock pins platform-specific (win32) binaries that break Linux
+# builds; the Dockerfile resolves dependencies fresh. See docs/TECHNICAL.md.
+package-lock.json

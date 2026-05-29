@@ -1,0 +1,267 @@
+:root {
+  --bg: #0f172a;
+  --panel: #1e293b;
+  --panel-2: #273449;
+  --text: #e2e8f0;
+  --muted: #94a3b8;
+  --border: #334155;
+  --blue: #2563eb;
+  --teal: #0d9488;
+  --orange: #ea580c;
+  --green: #16a34a;
+  --red: #dc2626;
+  --yellow: #ca8a04;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 14px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 20px 64px;
+}
+
+header.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+h1 {
+  font-size: 22px;
+  margin: 0;
+}
+
+h2 {
+  font-size: 16px;
+  margin: 0 0 12px;
+  color: var(--text);
+}
+
+.subtitle {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.toolbar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+button,
+.btn {
+  background: var(--panel-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+
+button.primary {
+  background: var(--blue);
+  border-color: var(--blue);
+}
+
+button.danger {
+  background: transparent;
+  border-color: var(--red);
+  color: #fca5a5;
+}
+
+button:hover {
+  filter: brightness(1.1);
+}
+
+.grid {
+  display: grid;
+  gap: 16px;
+}
+
+.cards {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  margin-bottom: 16px;
+}
+
+.two-col {
+  grid-template-columns: 1fr 1fr;
+}
+
+@media (max-width: 900px) {
+  .two-col {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.metric .value {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.metric .label {
+  color: var(--muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+th {
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.badge.sold {
+  background: rgba(22, 163, 74, 0.2);
+  color: #4ade80;
+}
+.badge.rejected {
+  background: rgba(220, 38, 38, 0.2);
+  color: #f87171;
+}
+.badge.unsold {
+  background: rgba(202, 138, 4, 0.2);
+  color: #fbbf24;
+}
+.badge.returned {
+  background: rgba(37, 99, 235, 0.2);
+  color: #60a5fa;
+}
+.badge.pending_distribution {
+  background: rgba(148, 163, 184, 0.2);
+  color: #cbd5e1;
+}
+.badge.active {
+  background: rgba(13, 148, 136, 0.2);
+  color: #5eead4;
+}
+
+.sev-critical {
+  color: #f87171;
+}
+.sev-warning {
+  color: #fbbf24;
+}
+.sev-info {
+  color: #93c5fd;
+}
+
+form.lead-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+form.lead-form .full {
+  grid-column: 1 / -1;
+}
+
+label {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+input,
+select {
+  width: 100%;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 13px;
+}
+
+.return-form {
+  display: flex;
+  gap: 6px;
+}
+
+.return-form input {
+  width: 130px;
+  padding: 4px 8px;
+}
+
+.banner {
+  background: rgba(220, 38, 38, 0.15);
+  border: 1px solid var(--red);
+  color: #fca5a5;
+  padding: 14px 16px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.ai-box {
+  background: linear-gradient(180deg, rgba(37, 99, 235, 0.1), rgba(13, 148, 136, 0.06));
+  border: 1px solid #1d4ed8;
+}
+
+.ai-box ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+
+.section {
+  margin-top: 16px;
+}
+
+.mono {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 12px;
+}

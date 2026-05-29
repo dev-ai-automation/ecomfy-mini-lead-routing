@@ -1,0 +1,6 @@
+node_modules
+.next
+.env*.local
+# Lock is generated on the host (Windows). Exclude it so the Linux image
+# resolves platform-correct binaries (@next/swc-linux-*) on a fresh install.
+package-lock.json
