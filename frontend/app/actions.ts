@@ -2,29 +2,30 @@
 
 import { revalidatePath } from "next/cache";
 
-import { apiPost } from "@/lib/api";
+import { apiGet, apiPost } from "@/lib/api";
 
-export async function submitLead(formData: FormData) {
-  const trusted = String(formData.get("trusted_form_cert_url") || "");
-  const payload = {
-    first_name: String(formData.get("first_name") || ""),
-    last_name: String(formData.get("last_name") || ""),
-    phone: String(formData.get("phone") || ""),
-    email: String(formData.get("email") || ""),
-    state: String(formData.get("state") || ""),
-    vertical: String(formData.get("vertical") || ""),
-    source: String(formData.get("source") || ""),
-    trusted_form_cert_url: trusted || null,
-  };
-  await apiPost("/leads", payload);
+// Submit a lead through the real pipeline, then fetch its full detail so the
+// routing-trace drawer has everything (lead fields + evaluations + attempts).
+export async function submitLead(payload: Record<string, unknown>) {
+  const result = await apiPost("/leads", payload);
+  let detail: any = null;
+  try {
+    if (result?.lead_id) detail = await apiGet(`/leads/${result.lead_id}`);
+  } catch {
+    detail = null;
+  }
   revalidatePath("/");
+  return { result, detail };
 }
 
-export async function returnLead(formData: FormData) {
-  const leadId = String(formData.get("lead_id") || "");
-  const reason = String(formData.get("reason") || "");
-  await apiPost(`/leads/${leadId}/return`, { reason });
+export async function getLeadDetail(leadId: string) {
+  return apiGet(`/leads/${encodeURIComponent(leadId)}`);
+}
+
+export async function returnLead(leadId: string, reason: string) {
+  const result = await apiPost(`/leads/${encodeURIComponent(leadId)}/return`, { reason });
   revalidatePath("/");
+  return result;
 }
 
 export async function resetDemo() {
@@ -33,6 +34,7 @@ export async function resetDemo() {
 }
 
 export async function seedLeads() {
-  await apiPost("/dev/seed-leads");
+  const result = await apiPost("/dev/seed-leads");
   revalidatePath("/");
+  return result;
 }
